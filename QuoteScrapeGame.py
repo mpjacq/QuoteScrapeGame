@@ -53,11 +53,13 @@ def get_quotes():
 
 def guessing_game():
     """
-
-    :return:
+    Plays a guessing game, which scrapes website for a quote and has player
+    type in their guess. Answer must match first and last name as typed
+    on the website (including punctuation), but guesses may be case
+    insensitive.
+    :return: None
     """
 
-    playing = True
     guessed = False
     tries = 1
 
@@ -68,50 +70,69 @@ def guessing_game():
     author = choice[1]
 
     # Set up the intro message and first turn.
-    print("##################################\n########## Who Said It? ##########\n##################################\n")
+    print("\n##################################"
+          "\n########## Who Said It? ##########"
+          "\n##################################\n")
+
+    # Display the quote
     print(quote + "\n")
-    guess = input("Who said it? Please type your guess. You'll get 3 tries.\n"
-                  "Please include the whole name (first and last): \n")
 
-    while not guessed and tries < 3:
+    # Explain the rules and get player guess
+    guess = input("Who said it? You'll get 3 tries. Please type your guess (first and last name): ")
 
+    while not guessed and tries <= 3:
+
+        # Correct guess
         if guess.lower() == author.lower():
             print(f"That's correct! It took you {tries} guess(es). Good job!")
-            try_again = input("Would you like to play again? Y/N ")
-
-            if try_again.upper() == "Y":
-                guessed = True
-
-            else:
-                guessed = True
-
-        else:
-            print(f"Sorry, {guess} is incorrect. You have {3 - tries} tries remaining.")
-            tries += 1
-            guess = input("Try again:\n")
-
-    counter = 0
-
-    while tries >= 3 and not guessed:
-
-        if counter == 0:
-            print(f"Sorry, you used up all of your tries. The correct answer was: {author}")
-            try_again = input("Would you like to play again? Y/N ")
-
-        if try_again.upper() == "Y":
-            print("\n")
-            guessing_game()
-
-        elif try_again.upper() == "N":
-            print("Goodbye!")
+            guessed = True
             return
 
+        # Incorrect guess
         else:
-            counter += 1
-            try_again = input("That's not a valid choice. Want to try that again? Y/N: ")
+
+            if tries < 3:
+                print(f"Sorry, {guess} is incorrect. You have {3 - tries} tries remaining.")
+                guess = input("Try again: ")
+
+            # If player has used all 3 tries
+            else:
+                print(f"Sorry, you used up all of your tries. The correct answer was: {author}")
+
+            tries += 1
 
 
 if __name__ == "__main__":
 
-    guessing_game()
+    playing = True
+
+    play_count = 0
+
+    while playing:
+
+        # Only ask if they want to play again after the first time.
+        if play_count > 0:
+            play_again = input("Would you like to play again? Y/N ")
+
+        # Increment play count after first play-through so that
+        # we get the prompt asking if you want to play again
+        else:
+            play_again = "Y"
+            play_count += 1
+
+        # Call game method if they want to play again
+        if play_again.upper() == "Y":
+            guessing_game()
+
+        # Exit while loop if not playing again
+        elif play_again.upper() == "N":
+            playing = False
+
+        # Keep looping if invalid input
+        else:
+            print(f"{play_again} isn't a valid input.")
+
+    # Exit message
+    print("Goodbye!")
+
 
